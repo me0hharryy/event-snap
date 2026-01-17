@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Landing from "./pages/public/Landing";
 import Explore from "./pages/public/Explore";
 import Pricing from "./pages/public/Pricing";
+import Register from "./pages/public/Register"; // Import New Page
 import Overview from "./pages/dashboard/Overview";
 import CreateEvent from "./pages/dashboard/CreateEvent";
 import Attendees from "./pages/dashboard/Attendees";
@@ -16,6 +17,7 @@ export default function App() {
       <Route path="/" element={<Landing />} />
       <Route path="/explore" element={<Explore />} />
       <Route path="/pricing" element={<Pricing />} />
+      <Route path="/register/:id" element={<Register />} /> {/* New Route */}
       
       {/* Auth Routes */}
       <Route path="/sign-in/*" element={<SignInPage />} />

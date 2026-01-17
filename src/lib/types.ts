@@ -4,12 +4,13 @@ export interface Profile {
   plan_tier: 'free' | 'pro';
 }
 
-// Ensure this says 'AppEvent', NOT 'Event'
 export interface AppEvent {
   id: string;
   organizer_id: string;
   title: string;
   description: string;
+  image_url?: string; // Optional image
+  category?: string;  // Optional category
   date: string;
   location: string;
   price: number;

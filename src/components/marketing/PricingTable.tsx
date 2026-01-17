@@ -4,57 +4,41 @@ import { Card } from "../ui/Card";
 
 export default function PricingTable() {
   return (
-    <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-      {/* Free Tier */}
-      <Card className="p-8 flex flex-col hover:border-slate-300 transition-colors">
-        <div className="mb-4">
-          <h3 className="text-xl font-bold text-slate-900">Starter</h3>
-          <p className="text-slate-500 text-sm mt-2">For local meetups & hobbyists.</p>
+    <div className="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
+      {/* Starter Tier */}
+      <Card className="bg-cream hover:bg-white transition-colors">
+        <div className="mb-4 border-b-2 border-black pb-4">
+          <h3 className="text-3xl font-display text-black">Apprentice</h3>
+          <p className="text-black/70 font-accent text-lg mt-1">For local meetups.</p>
         </div>
-        <div className="text-4xl font-black mb-6">₹0</div>
+        <div className="text-5xl font-display mb-8">₹0</div>
         
-        <ul className="space-y-4 mb-8 flex-1">
-          <li className="flex gap-3 text-sm text-slate-600">
-            <Check className="w-5 h-5 text-blue-600 flex-shrink-0" /> 1 Active Event
-          </li>
-          <li className="flex gap-3 text-sm text-slate-600">
-            <Check className="w-5 h-5 text-blue-600 flex-shrink-0" /> 100 Attendees Max
-          </li>
-          <li className="flex gap-3 text-sm text-slate-600">
-            <Check className="w-5 h-5 text-blue-600 flex-shrink-0" /> Standard Support
-          </li>
+        <ul className="space-y-4 mb-8 flex-1 font-sans text-lg">
+          <li className="flex gap-3"><Check className="w-5 h-5 text-orange" /> 1 Active Event</li>
+          <li className="flex gap-3"><Check className="w-5 h-5 text-orange" /> 100 Attendees Max</li>
         </ul>
         
-        <Button variant="outline" className="w-full">Get Started Free</Button>
+        <Button variant="outline" className="w-full">Start Free</Button>
       </Card>
 
       {/* Pro Tier */}
-      <Card className="p-8 flex flex-col border-blue-200 bg-blue-50/50 relative overflow-hidden">
-        <div className="absolute top-0 right-0 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
-          RECOMMENDED
+      <Card className="bg-orange text-white relative transform md:-translate-y-4">
+        <div className="absolute top-0 right-0 bg-black text-white text-xs font-bold px-4 py-2 border-l-2 border-b-2 border-white">
+          MOST POPULAR
         </div>
-        <div className="mb-4">
-          <h3 className="text-xl font-bold text-slate-900">Pro Host</h3>
-          <p className="text-slate-500 text-sm mt-2">For serious organizers.</p>
+        <div className="mb-4 border-b-2 border-black/20 pb-4">
+          <h3 className="text-3xl font-display text-white drop-shadow-md">Ringmaster</h3>
+          <p className="text-white/90 font-accent text-lg mt-1">For serious organizers.</p>
         </div>
-        <div className="text-4xl font-black mb-6">₹999 <span className="text-lg font-normal text-slate-500">/mo</span></div>
+        <div className="text-5xl font-display mb-8 text-white drop-shadow-md">₹999 <span className="text-xl font-sans font-normal opacity-80">/mo</span></div>
         
-        <ul className="space-y-4 mb-8 flex-1">
-          <li className="flex gap-3 text-sm text-slate-700">
-            <Check className="w-5 h-5 text-blue-600 flex-shrink-0" /> Unlimited Events
-          </li>
-          <li className="flex gap-3 text-sm text-slate-700">
-            <Check className="w-5 h-5 text-blue-600 flex-shrink-0" /> Unlimited Attendees
-          </li>
-          <li className="flex gap-3 text-sm text-slate-700">
-            <Check className="w-5 h-5 text-blue-600 flex-shrink-0" /> Export to CSV
-          </li>
-          <li className="flex gap-3 text-sm text-slate-700">
-            <Check className="w-5 h-5 text-blue-600 flex-shrink-0" /> Priority Support
-          </li>
+        <ul className="space-y-4 mb-8 flex-1 font-sans text-lg">
+          <li className="flex gap-3"><Check className="w-5 h-5 text-black" /> Unlimited Events</li>
+          <li className="flex gap-3"><Check className="w-5 h-5 text-black" /> 0% Commission</li>
+          <li className="flex gap-3"><Check className="w-5 h-5 text-black" /> CSV Export</li>
         </ul>
         
-        <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">Upgrade to Pro</Button>
+        <Button className="w-full bg-black text-white border-white hover:bg-white hover:text-black">Upgrade Now</Button>
       </Card>
     </div>
   );
