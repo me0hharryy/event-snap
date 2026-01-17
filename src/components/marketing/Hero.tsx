@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, CheckCircle, Zap, TrendingUp } from "lucide-react";
+import {  CheckCircle, Zap, TrendingUp } from "lucide-react";
 import { Button } from "../ui/Button";
-import { useState, useRef, MouseEvent } from "react";
+import { useState, useRef, type MouseEvent } from "react";
 
 export default function Hero() {
   // Parallax Logic

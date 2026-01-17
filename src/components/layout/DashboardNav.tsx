@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { UserButton } from "@clerk/clerk-react";
 import { LayoutDashboard, Plus, Users, Zap, ArrowLeft, Ticket } from "lucide-react";
 import { cn } from "../../lib/utils";
-
+import { QrCode } from "lucide-react";
 export default function DashboardNav() {
   const location = useLocation();
   const isActive = (path: string) => location.pathname.includes(path);
@@ -35,6 +35,7 @@ export default function DashboardNav() {
         <NavItem to="/dashboard/tickets" icon={Ticket} label="My Tickets" activeKey="tickets" />
         <NavItem to="/dashboard/events/new" icon={Plus} label="New Event" activeKey="events" />
         <NavItem to="/dashboard/attendees" icon={Users} label="Attendees" activeKey="attendees" />
+        <NavItem to="/dashboard/scan" icon={QrCode} label="Scanner" activeKey="scan" />
       </div>
 
       {/* Footer */}

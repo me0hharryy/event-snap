@@ -3,7 +3,7 @@ import Footer from "../../components/layout/Footer";
 import Hero from "../../components/marketing/Hero";
 import { Link } from "react-router-dom";
 import { Button } from "../../components/ui/Button";
-import { Zap, Ticket, Users, Globe, Smartphone, ShieldCheck } from "lucide-react";
+import { Zap,  Globe, Smartphone } from "lucide-react";
 
 export default function Landing() {
   return (

@@ -27,7 +27,7 @@ L.Icon.Default.mergeOptions({
 function LocationMarker({ setLocation }: { setLocation: (loc: string) => void }) {
   const [position, setPosition] = useState<L.LatLng | null>(null);
   
-  const map = useMapEvents({
+  useMapEvents({
     click(e) {
       setPosition(e.latlng);
       fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${e.latlng.lat}&lon=${e.latlng.lng}`)

@@ -12,6 +12,7 @@ import Attendees from "./pages/dashboard/Attendees";
 import MyTickets from "./pages/dashboard/MyTickets";
 import SignInPage from "./pages/auth/SignIn";
 import SignUpPage from "./pages/auth/SignUp";
+import ScannerPage from "./pages/dashboard/Scanner";
 import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
 
 export default function App() {
@@ -35,7 +36,7 @@ export default function App() {
       <Route path="/dashboard/events/new" element={<SignedIn><CreateEvent /></SignedIn>} />
       <Route path="/dashboard/events/edit/:id" element={<SignedIn><EditEvent /></SignedIn>} />
       <Route path="/dashboard/attendees" element={<SignedIn><Attendees /></SignedIn>} />
-      
+      <Route path="/dashboard/scan" element={<SignedIn><ScannerPage /></SignedIn>} />
       {/* Redirect unknown protected routes */}
       <Route path="/dashboard/*" element={<SignedOut><RedirectToSignIn /></SignedOut>} />
     </Routes>
