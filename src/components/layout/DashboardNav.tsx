@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { UserButton } from "@clerk/clerk-react";
-import { LayoutDashboard, Plus, Users, Zap, ArrowLeft } from "lucide-react";
+import { LayoutDashboard, Plus, Users, Zap, ArrowLeft, Ticket } from "lucide-react";
 import { cn } from "../../lib/utils";
 
 export default function DashboardNav() {
@@ -23,27 +23,26 @@ export default function DashboardNav() {
 
   return (
     <div className="h-screen w-64 bg-cream text-black fixed left-0 top-0 flex flex-col border-r-2 border-black z-40">
-      {/* Logo Area */}
+      {/* Logo */}
       <div className="flex items-center gap-2 font-display text-2xl px-6 py-8 text-orange drop-shadow-sm">
         <Zap className="w-6 h-6 fill-current" />
         EventSnap
       </div>
 
       {/* Nav Links */}
-      <div className="space-y-4 px-4 flex-1">
+      <div className="space-y-2 px-4 flex-1">
         <NavItem to="/dashboard/overview" icon={LayoutDashboard} label="Overview" activeKey="overview" />
+        <NavItem to="/dashboard/tickets" icon={Ticket} label="My Tickets" activeKey="tickets" />
         <NavItem to="/dashboard/events/new" icon={Plus} label="New Event" activeKey="events" />
         <NavItem to="/dashboard/attendees" icon={Users} label="Attendees" activeKey="attendees" />
       </div>
 
-      {/* Footer Area */}
+      {/* Footer */}
       <div className="mt-auto p-6 space-y-6">
-        {/* Back to Home Button */}
         <Link to="/" className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-black/60 hover:text-black transition-colors">
             <ArrowLeft className="w-4 h-4" /> Back to Website
         </Link>
 
-        {/* User Profile */}
         <div className="pt-6 border-t-2 border-black/10">
             <div className="flex items-center gap-3">
               <UserButton showName appearance={{ elements: { userButtonBox: "flex-row-reverse text-black font-sans" } }} />
