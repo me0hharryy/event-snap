@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react"; // <--- Added useEffect
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import { supabase } from "../../lib/supabase";
+import { usePlan } from "../../hooks/usePlan"; // <--- Added Hook
 import DashboardNav from "../../components/layout/DashboardNav";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
-import { usePlan } from "../../hooks/usePlan";
-import { MapPin, Image as ImageIcon, Ticket, Calendar, Type } from "lucide-react";
+import { MapPin, Image as ImageIcon, Ticket, Calendar, Type, Crown } from "lucide-react";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -48,8 +48,36 @@ export default function CreateEvent() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
+  // --- LIMIT LOGIC START ---
+  const { isPro, maxEvents, loading: planLoading } = usePlan();
+  const [eventCount, setEventCount] = useState(0);
+
+  useEffect(() => {
+    if (!user) return;
+    async function countEvents() {
+        const { count } = await supabase
+            .from('events')
+            .select('*', { count: 'exact', head: true })
+            .eq('organizer_id', user.id)
+            .neq('status', 'cancelled'); // Don't count cancelled events
+        
+        setEventCount(count || 0);
+    }
+    countEvents();
+  }, [user]);
+  // --- LIMIT LOGIC END ---
+
   const onSubmit = async (data: any) => {
     if (!user) return;
+
+    // 1. CHECK LIMIT BEFORE CREATING
+    if (!planLoading && eventCount >= maxEvents) {
+        if(window.confirm(`🔒 LIMIT REACHED\n\nYou are on the Starter Plan (Max 1 Event).\nYou already have ${eventCount} active event.\n\nUpgrade to Pro for unlimited events?`)) {
+            navigate("/pricing");
+        }
+        return; // Stop execution
+    }
+
     setLoading(true);
 
     const { error } = await supabase.from('events').insert({
@@ -76,14 +104,22 @@ export default function CreateEvent() {
       <div className="ml-64 flex-1 p-12">
         <div className="max-w-4xl mx-auto">
             
-            {/* Retro Header */}
+            {/* Header with Limit Badge */}
             <div className="mb-12 text-center relative">
                 <h2 className="text-6xl font-display text-orange drop-shadow-[3px_3px_0px_#222] uppercase tracking-wide">
                     Host a Spectacle
                 </h2>
-                <p className="text-xl font-body italic mt-2 opacity-80">
-                    "Step right up and announce your grand event to the world!"
-                </p>
+                <div className="flex justify-center gap-4 mt-4 items-center">
+                    <p className="text-xl font-body italic opacity-80">
+                        "Step right up and announce your grand event!"
+                    </p>
+                    {/* Visual Counter */}
+                    {!planLoading && (
+                        <span className={`px-3 py-1 text-xs font-bold uppercase tracking-widest border border-black ${eventCount >= maxEvents ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-700'}`}>
+                            Used: {eventCount} / {isPro ? '∞' : maxEvents}
+                        </span>
+                    )}
+                </div>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
@@ -190,9 +226,19 @@ export default function CreateEvent() {
 
                 {/* Footer Action */}
                 <div className="flex justify-end pt-4">
-                    <Button type="submit" disabled={loading} size="lg" className="text-xl px-12 py-6">
-                        {loading ? "Summoning..." : "Publish Spectacle"}
-                    </Button>
+                    {/* CONDITIONAL BUTTON RENDERING */}
+                    {!planLoading && eventCount >= maxEvents ? (
+                         <div className="flex flex-col items-end gap-2">
+                             <Button type="button" onClick={() => navigate("/pricing")} size="lg" className="text-xl px-12 py-6 bg-gray-200 text-gray-500 border-gray-300 hover:bg-gray-200 cursor-not-allowed">
+                                Limit Reached (Max 1)
+                             </Button>
+                             <p className="text-xs text-red-500 font-bold uppercase tracking-widest">Upgrade to create more events</p>
+                         </div>
+                    ) : (
+                        <Button type="submit" disabled={loading} size="lg" className="text-xl px-12 py-6">
+                            {loading ? "Summoning..." : "Publish Spectacle"}
+                        </Button>
+                    )}
                 </div>
 
             </form>

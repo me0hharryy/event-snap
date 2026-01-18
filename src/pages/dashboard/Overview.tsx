@@ -4,13 +4,13 @@ import { supabase } from "../../lib/supabase";
 import { usePlan } from "../../hooks/usePlan"; // <--- IMPORT THIS
 import DashboardNav from "../../components/layout/DashboardNav";
 import { formatCurrency } from "../../lib/utils";
-import { Ticket, TrendingUp, Calendar, ArrowUpRight, Pencil, Crown, Loader2 } from "lucide-react";
+import {  ArrowUpRight, Pencil, Crown, Loader2 } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import confetti from "canvas-confetti";
 
 export default function Overview() {
   const { user } = useUser();
-  const { isPro, planName } = usePlan(); // <--- USE HOOK
+  const { isPro } = usePlan(); // <--- USE HOOK
   const [stats, setStats] = useState({ revenue: 0, tickets: 0, activeEvents: 0 });
   const [recentEvents, setRecentEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

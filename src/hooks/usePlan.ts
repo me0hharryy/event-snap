@@ -45,7 +45,7 @@ export function usePlan() {
     isPro,
     // Dynamic Rules
     platformFee: isPro ? 0 : 0.15, // 0% for Pro, 15% for Free
-    maxEvents: isPro ? 9999 : 1,   // 1 Event for Free
+    maxEvents: isPro ? 99999 : 1,   // 1 Event for Free
     canExportData: isPro,
   };
 }

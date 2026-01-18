@@ -7,7 +7,7 @@ import { Check, Loader2, Crown } from "lucide-react";
 
 export default function Pricing() {
   const { user, isSignedIn } = useUser();
-  const { isPro, loading: planLoading } = usePlan(); // <--- CHECK PLAN STATUS
+  const { isPro } = usePlan(); // <--- CHECK PLAN STATUS
   const [loading, setLoading] = useState<string | null>(null);
 
   // PayU Form State
