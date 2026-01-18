@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react"; // <--- Added useEffect
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "@clerk/clerk-react";
+import { useUser, useAuth } from "@clerk/clerk-react";
 import { supabase } from "../../lib/supabase";
 import { usePlan } from "../../hooks/usePlan"; // <--- Added Hook
 import DashboardNav from "../../components/layout/DashboardNav";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
-import { MapPin, Image as ImageIcon, Ticket, Calendar, Type, Crown } from "lucide-react";
+import { MapPin, Image as ImageIcon, Ticket, Calendar, Type } from "lucide-react";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -44,7 +44,8 @@ function LocationMarker({ setLocation }: { setLocation: (loc: string) => void })
 
 export default function CreateEvent() {
   const { register, handleSubmit, setValue } = useForm();
-  const { user } = useUser();
+  const { isLoaded } = useUser();
+  const { userId } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -53,22 +54,22 @@ export default function CreateEvent() {
   const [eventCount, setEventCount] = useState(0);
 
   useEffect(() => {
-    if (!user) return;
+    if (!isLoaded || !userId) return;
     async function countEvents() {
         const { count } = await supabase
             .from('events')
             .select('*', { count: 'exact', head: true })
-            .eq('organizer_id', user.id)
+            .eq('organizer_id', userId)
             .neq('status', 'cancelled'); // Don't count cancelled events
         
         setEventCount(count || 0);
     }
     countEvents();
-  }, [user]);
+  }, [userId, isLoaded]);
   // --- LIMIT LOGIC END ---
 
   const onSubmit = async (data: any) => {
-    if (!user) return;
+    if (!userId) return;
 
     // 1. CHECK LIMIT BEFORE CREATING
     if (!planLoading && eventCount >= maxEvents) {
@@ -81,7 +82,7 @@ export default function CreateEvent() {
     setLoading(true);
 
     const { error } = await supabase.from('events').insert({
-      organizer_id: user.id,
+      organizer_id: userId,
       title: data.title,
       description: data.description,
       image_url: data.image_url,
