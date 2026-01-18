@@ -3,7 +3,7 @@ import { useUser } from "@clerk/clerk-react";
 import { supabase } from "../../lib/supabase";
 import DashboardNav from "../../components/layout/DashboardNav";
 import { formatCurrency } from "../../lib/utils";
-import { Ticket, TrendingUp, Calendar, ArrowUpRight, Pencil, Trash2 } from "lucide-react";
+import { Ticket, TrendingUp, Calendar, ArrowUpRight, Pencil  } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Overview() {
@@ -42,17 +42,17 @@ export default function Overview() {
   }, [user]);
 
   // DELETE HANDLER
-  const handleDelete = async (eventId: string) => {
-    if(!confirm("Are you sure? This will delete the event and tickets permanently.")) return;
+//   const handleDelete = async (eventId: string) => {
+//     if(!confirm("Are you sure? This will delete the event and tickets permanently.")) return;
     
-    const { error } = await supabase.from('events').delete().eq('id', eventId);
-    if(!error) {
-        setRecentEvents(prev => prev.filter(e => e.id !== eventId));
-        setStats(prev => ({ ...prev, activeEvents: prev.activeEvents - 1 }));
-    } else {
-        alert("Could not delete: " + error.message);
-    }
-  };
+//     const { error } = await supabase.from('events').delete().eq('id', eventId);
+//     if(!error) {
+//         setRecentEvents(prev => prev.filter(e => e.id !== eventId));
+//         setStats(prev => ({ ...prev, activeEvents: prev.activeEvents - 1 }));
+//     } else {
+//         alert("Could not delete: " + error.message);
+//     }
+//   };
 
   return (
     <div className="flex min-h-screen bg-cream font-sans text-black selection:bg-orange selection:text-white">

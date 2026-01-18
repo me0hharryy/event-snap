@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { supabase } from "../../lib/supabase";
 import DashboardNav from "../../components/layout/DashboardNav";
-import { Card } from "../../components/ui/Card";
+//import { Card } from "../../components/ui/Card";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
 import { Clock, Wallet as WalletIcon, CheckCircle, AlertCircle, TrendingUp, ShieldCheck } from "lucide-react";

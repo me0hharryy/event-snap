@@ -80,6 +80,7 @@ export default function EditEvent() {
         alert("Update failed: " + err.message);
     } finally {
         setLoading(false);
+        console.log(loading);
     }
   };
 

@@ -14,7 +14,7 @@ export default function AdminPayouts() {
   const { user, isLoaded } = useUser();
   const navigate = useNavigate();
   const [requests, setRequests] = useState<any[]>([]);
-  //const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -39,6 +39,7 @@ export default function AdminPayouts() {
     
     if (data) setRequests(data);
     setLoading(false);
+    console.log(loading)
   }
 
   const handleStatusUpdate = async (id: string, newStatus: 'paid' | 'rejected') => {

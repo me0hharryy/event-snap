@@ -16,6 +16,7 @@ export default function ScannerPage() {
       const ticketId = result[0].rawValue;
       setScanResult(ticketId);
       validateTicket(ticketId);
+      console.log(scanResult);
     }
   };
 
