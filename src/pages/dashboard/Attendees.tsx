@@ -12,6 +12,7 @@ interface Attendee {
     attendee_email: string;
     phone?: string;          // <--- ADDED THIS
     payment_status: string;
+    check_in_status?: string;
     status: string;          // <--- ADDED THIS ('checked_in' etc)
     amount_paid: number;
     created_at: string;

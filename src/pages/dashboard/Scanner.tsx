@@ -49,7 +49,7 @@ export default function ScannerPage() {
     }
 
     // 3. DUPLICATE CHECK: Is it already used?
-    if (ticket.payment_status === 'checked_in') {
+    if (ticket.check_in_status === 'checked_in') {
       setTicketDetails(ticket);
       setStatus('used');
       return;
@@ -58,7 +58,8 @@ export default function ScannerPage() {
     // 4. MARK AS CHECKED IN
     const { error: updateError } = await supabase
       .from('registrations')
-      .update({ payment_status: 'checked_in' })
+      .update({check_in_status: 'checked_in', 
+          updated_at: new Date().toISOString()})
       .eq('id', ticketId);
 
     if (updateError) {

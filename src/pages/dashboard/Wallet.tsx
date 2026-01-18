@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { supabase } from "../../lib/supabase";
+import { usePlan } from "../../hooks/usePlan"; // <--- IMPORT HOOK
 import DashboardNav from "../../components/layout/DashboardNav";
-//import { Card } from "../../components/ui/Card";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
 import { Clock, Wallet as WalletIcon, CheckCircle, AlertCircle, TrendingUp, ShieldCheck } from "lucide-react";
@@ -10,12 +10,13 @@ import { formatCurrency } from "../../lib/utils";
 
 export default function Wallet() {
   const { user } = useUser();
+  const { platformFee, isPro, loading: planLoading } = usePlan(); // <--- DYNAMIC FEE
   
   // Financial State
-  const [totalSales, setTotalSales] = useState(0);    // Gross amount collected
-  const [netEarnings, setNetEarnings] = useState(0);  // Organizer's share (85%)
-  const [platformFee, setPlatformFee] = useState(0);  // Your share (15%)
-  const [withdrawn, setWithdrawn] = useState(0);      // Money already paid out
+  const [totalSales, setTotalSales] = useState(0);    
+  const [netEarnings, setNetEarnings] = useState(0);  
+  const [feeAmount, setFeeAmount] = useState(0); 
+  const [withdrawn, setWithdrawn] = useState(0);      
   const [payouts, setPayouts] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   
@@ -23,12 +24,10 @@ export default function Wallet() {
   const [amount, setAmount] = useState("");
   const [upiId, setUpiId] = useState("");
 
-  const COMMISSION_RATE = 0.15; // 15% Commission
-
   useEffect(() => {
-    if (!user) return;
+    if (!user || planLoading) return;
     fetchFinancials();
-  }, [user]);
+  }, [user, planLoading, platformFee]); // Re-run if fee changes
 
   async function fetchFinancials() {
     // 1. Calculate Gross Ticket Sales
@@ -40,15 +39,15 @@ export default function Wallet() {
 
     const gross = tickets?.reduce((sum, t) => sum + (t.amount_paid || 0), 0) || 0;
     
-    // 2. Apply 15% Commission Logic
-    const fee = gross * COMMISSION_RATE;
+    // 2. Apply Dynamic Platform Fee (0% or 15%)
+    const fee = gross * platformFee;
     const net = gross - fee;
 
     setTotalSales(gross);
-    setPlatformFee(fee);
+    setFeeAmount(fee);
     setNetEarnings(net);
 
-    // 3. Fetch Payout History (Withdrawn Amount)
+    // 3. Fetch Payout History
     const { data: payoutHistory } = await supabase
       .from('payout_requests')
       .select('*')
@@ -92,7 +91,7 @@ export default function Wallet() {
     else {
         alert("Withdrawal request sent!");
         setAmount("");
-        fetchFinancials(); // Refresh numbers immediately
+        fetchFinancials(); 
     }
     setLoading(false);
   };
@@ -124,10 +123,20 @@ export default function Wallet() {
                     <span>Total Sales (Gross)</span>
                     <span className="font-bold">{formatCurrency(totalSales)}</span>
                 </div>
+                
+                {/* DYNAMIC FEE DISPLAY */}
                 <div className="flex justify-between items-center mb-3 text-sm text-red-300">
-                    <span>Platform Fee (15%)</span>
-                    <span className="font-bold">-{formatCurrency(platformFee)}</span>
+                    <span className="flex items-center gap-2">
+                        Platform Fee ({(platformFee * 100).toFixed(0)}%)
+                        {!isPro && (
+                            <span className="text-[10px] bg-red-500 text-white px-1.5 rounded uppercase font-bold tracking-wide">
+                                Starter
+                            </span>
+                        )}
+                    </span>
+                    <span className="font-bold">-{formatCurrency(feeAmount)}</span>
                 </div>
+                
                 <div className="h-[1px] bg-white/20 my-3"></div>
                 <div className="flex justify-between items-center text-lg font-bold">
                     <span>Your Net Earnings</span>
@@ -135,6 +144,26 @@ export default function Wallet() {
                 </div>
             </div>
         </div>
+
+        {/* UPGRADE NUDGE FOR FREE USERS */}
+        {!isPro && (
+             <div className="mb-12 bg-yellow-50 border-2 border-yellow-200 p-4 flex items-center justify-between rounded-xl">
+                <div className="flex items-center gap-3">
+                    <div className="bg-yellow-100 p-2 rounded-full">
+                        <TrendingUp className="w-5 h-5 text-yellow-700" />
+                    </div>
+                    <div>
+                        <p className="font-bold text-yellow-900">Want to keep 100% of your earnings?</p>
+                        <p className="text-sm text-yellow-700 opacity-80">Upgrade to Pro to pay 0% platform fees.</p>
+                    </div>
+                </div>
+                <a href="/pricing">
+                    <Button variant="outline" className="border-yellow-600 text-yellow-800 hover:bg-yellow-100">
+                        Upgrade Now
+                    </Button>
+                </a>
+             </div>
+        )}
 
         {/* --- WITHDRAWAL & HISTORY SECTION --- */}
         <div className="grid lg:grid-cols-2 gap-8">
@@ -151,7 +180,7 @@ export default function Wallet() {
                         <label className="block text-xs font-bold uppercase tracking-widest mb-2 opacity-60">Withdraw Amount (INR)</label>
                         <Input 
                             type="number" 
-                            max={availableBalance} // Prevents entering more than balance
+                            max={availableBalance} 
                             value={amount} 
                             onChange={e => setAmount(e.target.value)} 
                             required 

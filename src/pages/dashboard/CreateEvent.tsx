@@ -6,6 +6,7 @@ import { supabase } from "../../lib/supabase";
 import DashboardNav from "../../components/layout/DashboardNav";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
+import { usePlan } from "../../hooks/usePlan";
 import { MapPin, Image as ImageIcon, Ticket, Calendar, Type } from "lucide-react";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
