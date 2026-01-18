@@ -3,7 +3,7 @@ import { useUser } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 import DashboardNav from "../../components/layout/DashboardNav";
-import { Button } from "../../components/ui/Button";
+//import { Button } from "../../components/ui/Button";
 import { CheckCircle, XCircle, Clock, ShieldAlert, Copy } from "lucide-react";
 import { formatCurrency } from "../../lib/utils";
 
@@ -14,7 +14,7 @@ export default function AdminPayouts() {
   const { user, isLoaded } = useUser();
   const navigate = useNavigate();
   const [requests, setRequests] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  //const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState<string | null>(null);
 
   useEffect(() => {

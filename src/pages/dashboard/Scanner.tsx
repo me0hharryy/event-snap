@@ -95,7 +95,8 @@ export default function ScannerPage() {
             <div className="w-full max-w-sm border-4 border-white/20 rounded-3xl overflow-hidden relative shadow-2xl bg-black">
                 <Scanner 
                     onScan={handleScan} 
-                    components={{ audio: false, finder: false }}
+                    components={{  finder: false }}
+                    constraints={{ facingMode: "environment" }}
                     styles={{ container: { width: '100%', height: '400px' } }}
                 />
                 

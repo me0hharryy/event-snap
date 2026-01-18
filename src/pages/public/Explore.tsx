@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
-import type{ AppEvent } from "../../lib/types";
+//import type{ AppEvent } from "../../lib/types";
 import MarketingNav from "../../components/layout/MarketingNav";
-import { Calendar, MapPin, Search, ArrowRight, Filter, Flame, X, Ticket } from "lucide-react";
+import { MapPin, Search, ArrowRight, Filter, Flame, X, Ticket } from "lucide-react";
 import { formatCurrency } from "../../lib/utils";
 
 const CATEGORIES = ["All", "Music", "Tech", "Business", "Art", "Social", "Sports"];

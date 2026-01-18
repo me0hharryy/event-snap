@@ -4,9 +4,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import { supabase } from "../../lib/supabase";
 import DashboardNav from "../../components/layout/DashboardNav";
-import { Button } from "../../components/ui/Button";
+//import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
-import { Loader2, AlertTriangle, Lock, Trash2, Ban } from "lucide-react";
+import {  AlertTriangle, Lock,  } from "lucide-react";
 
 export default function EditEvent() {
   const { id } = useParams();
@@ -154,14 +154,20 @@ export default function EditEvent() {
         
         <form onSubmit={handleSubmit(onSubmit)} className="max-w-3xl space-y-8 bg-white p-8 border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,0.1)]">
             
-            <Input label="Event Title" {...register("title")} />
+            <div className="w-full">
+                <label className="block text-xs font-bold uppercase tracking-widest mb-2 opacity-60">Event Title</label>
+                <Input {...register("title")} />
+            </div>
             
             <div className="grid md:grid-cols-2 gap-6">
                 <div className="w-full">
                     <label className="block text-xs font-bold uppercase tracking-widest mb-2 opacity-60">Date</label>
                     <input type="date" {...register("date")} className="w-full bg-white border-2 border-black/10 px-4 py-3 font-medium outline-none focus:border-black" />
                 </div>
-                <Input label="Location" {...register("location")} />
+                <div className="w-full">
+                    <label className="block text-xs font-bold uppercase tracking-widest mb-2 opacity-60">Location</label>
+                    <Input {...register("location")} />
+                </div>
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">

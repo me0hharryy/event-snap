@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { XCircle, ArrowLeft, RefreshCcw } from "lucide-react";
+import { XCircle, ArrowLeft } from "lucide-react";
 import MarketingNav from "../../components/layout/MarketingNav";
 
 export default function PaymentFailure() {

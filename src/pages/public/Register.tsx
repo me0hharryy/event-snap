@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import { supabase } from "../../lib/supabase";
-import type{ AppEvent } from "../../lib/types"; // Ensure AppEvent type has 'status' or just ignore TS warning
+//import type{ AppEvent } from "../../lib/types"; // Ensure AppEvent type has 'status' or just ignore TS warning
 import MarketingNav from "../../components/layout/MarketingNav";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
