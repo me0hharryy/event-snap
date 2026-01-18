@@ -43,6 +43,7 @@ export default async function handler(req, res) {
         event_id: event.id,
         attendee_name: firstname,
         attendee_email: email,
+        phone: phone,
         amount_paid: amount,
         payment_status: 'paid',
         transaction_id: mihpayid // Save PayU's ID for reference

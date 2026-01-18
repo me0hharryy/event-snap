@@ -129,13 +129,11 @@ export default function Overview() {
                     <div className="flex items-center gap-3">
                         <Link to={`/dashboard/events/edit/${e.id}`}>
                              <button title="Edit" className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-transparent hover:bg-black hover:text-white hover:border-black transition-all">
-                                <Pencil className="w-4 h-4" />
+                                <Pencil className="w-5 h-5" />
                             </button>
                         </Link>
                         
-                        <button onClick={() => handleDelete(e.id)} title="Delete" className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-transparent hover:bg-red-600 hover:text-white hover:border-black transition-all">
-                            <Trash2 className="w-4 h-4" />
-                        </button>
+                        
                         
                         <Link to="/dashboard/attendees">
                             <button title="View Guests" className="bg-cream border-2 border-black px-4 py-2 hover:bg-black hover:text-white transition-colors shadow-[2px_2px_0px_0px_#222] active:translate-y-1 active:shadow-none font-bold text-sm uppercase flex items-center gap-2">

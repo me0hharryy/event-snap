@@ -1,128 +1,153 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
+import { QRCodeSVG } from "qrcode.react";
 import { supabase } from "../../lib/supabase";
-import QRCode from "react-qr-code";
+import { Loader2, MapPin, Calendar, Download, Share2, CheckCircle } from "lucide-react";
 import MarketingNav from "../../components/layout/MarketingNav";
-import { Button } from "../../components/ui/Button";
-import { Calendar, MapPin, Download, ArrowLeft } from "lucide-react";
-
-// NEW IMPORT
-import { toPng } from "html-to-image";
+import { formatCurrency } from "../../lib/utils";
 
 export default function TicketView() {
   const { id } = useParams();
   const [ticket, setTicket] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     async function fetchTicket() {
-      const { data } = await supabase
+      if (!id) return;
+      
+      // Fetch Ticket + Event Details
+      const { data, error } = await supabase
         .from('registrations')
-        .select('*, events(*)')
+        .select(`
+            *,
+            events (
+                title,
+                date,
+                location,
+                image_url,
+                price
+            )
+        `)
         .eq('id', id)
         .single();
-      
-      if (data) setTicket(data);
+
+      if (error || !data) {
+          setError(true);
+      } else {
+          setTicket(data);
+      }
       setLoading(false);
     }
     fetchTicket();
   }, [id]);
 
-  // UPDATED DOWNLOAD FUNCTION
-  const downloadTicket = async () => {
-    const element = document.getElementById('ticket-stub');
-    if (!element) return;
-
-    try {
-      // Generate Image
-      const dataUrl = await toPng(element, { cacheBust: true });
-      
-      // Create Download Link
-      const link = document.createElement('a');
-      link.download = `ticket-${ticket.events.title.replace(/\s+/g, '-').toLowerCase()}.png`;
-      link.href = dataUrl;
-      link.click();
-    } catch (err) {
-      console.error("Could not generate ticket image", err);
-      alert("Error generating ticket. Please try taking a screenshot instead.");
-    }
+  const handleDownload = () => {
+    window.print();
   };
 
-  if (loading) return <div className="min-h-screen bg-cream flex items-center justify-center font-display text-2xl">Loading Ticket...</div>;
-  if (!ticket) return <div className="min-h-screen bg-cream flex items-center justify-center font-display text-2xl">Ticket not found.</div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-cream"><Loader2 className="animate-spin w-8 h-8" /></div>;
+  
+  if (error || !ticket) return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-cream text-center p-6">
+          <h1 className="text-4xl font-display mb-4">Ticket Not Found</h1>
+          <p className="mb-8 opacity-60">This ticket ID does not exist or has been removed.</p>
+          <Link to="/" className="bg-black text-white px-6 py-3 font-bold uppercase tracking-widest">Go Home</Link>
+      </div>
+  );
 
   return (
-    <div className="min-h-screen bg-cream font-sans text-black pb-20">
-      <MarketingNav />
+    <div className="min-h-screen bg-cream font-sans print:bg-white">
+      <div className="print:hidden">
+        <MarketingNav />
+      </div>
 
-      <div className="max-w-4xl mx-auto px-6 py-20 flex flex-col items-center">
+      <div className="max-w-4xl mx-auto px-6 py-20 print:p-0">
         
-        <Link to="/explore" className="mb-8 flex items-center gap-2 text-sm font-bold uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity">
-            <ArrowLeft className="w-4 h-4" /> Back to Events
-        </Link>
+        {/* Success Banner (Hidden when printing) */}
+        <div className="mb-8 text-center print:hidden animate-fade-in-up">
+            <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-8 h-8" />
+            </div>
+            <h1 className="text-3xl font-display mb-2">You're going to {ticket.events.title}!</h1>
+            <p className="opacity-60">Your ticket is confirmed. Show this QR code at the entrance.</p>
+        </div>
 
-        <h1 className="font-display text-5xl md:text-6xl mb-12 text-center">
-            Your <span className="text-orange italic">Pass</span> is Ready.
-        </h1>
-
-        {/* TICKET STUB UI */}
-        <div id="ticket-stub" className="w-full max-w-3xl bg-white border-2 border-black shadow-[16px_16px_0px_0px_#222] flex flex-col md:flex-row overflow-hidden relative">
+        {/* --- TICKET CARD --- */}
+        <div className="bg-white border-2 border-black shadow-[16px_16px_0px_0px_rgba(0,0,0,0.1)] print:shadow-none print:border-2 flex flex-col md:flex-row overflow-hidden max-w-3xl mx-auto relative">
             
-            {/* Left: Event Details */}
-            <div className="flex-1 p-8 md:p-12 relative border-b-2 md:border-b-0 md:border-r-2 border-dashed border-black/20 bg-white">
-                {/* Decorative Holes */}
-                <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-cream rounded-full border-r-2 border-black"></div>
+            {/* Left Side: Event Info */}
+            <div className="flex-1 p-8 md:p-10 border-b-2 md:border-b-0 md:border-r-2 border-black border-dashed relative">
+                {/* Punch Holes Visuals */}
+                <div className="absolute -top-3 -right-3 w-6 h-6 bg-cream rounded-full border-2 border-black print:hidden"></div>
+                <div className="absolute -bottom-3 -right-3 w-6 h-6 bg-cream rounded-full border-2 border-black print:hidden"></div>
                 
-                <div className="inline-block bg-orange text-white px-3 py-1 font-bold uppercase text-xs tracking-widest mb-6 border border-black">
-                   {ticket.events.category || "General Admission"}
-                </div>
-
-                <h2 className="font-display text-5xl leading-none mb-6">{ticket.events.title}</h2>
+                <div className="text-xs font-bold uppercase tracking-widest opacity-40 mb-2">Event Ticket</div>
+                <h2 className="text-4xl font-display leading-none mb-6">{ticket.events.title}</h2>
                 
-                <div className="space-y-4 opacity-80 text-lg font-medium">
+                <div className="space-y-4 mb-8">
                     <div className="flex items-center gap-3">
-                        <Calendar className="w-5 h-5 text-orange" />
-                        <span>{new Date(ticket.events.date).toLocaleDateString()}</span>
+                        <div className="w-10 h-10 bg-orange/10 flex items-center justify-center border-2 border-black rounded-full">
+                            <Calendar className="w-5 h-5 text-orange" />
+                        </div>
+                        <div>
+                            <p className="text-xs uppercase font-bold opacity-50">Date</p>
+                            <p className="font-bold">
+                                {new Date(ticket.events.date).toLocaleDateString(undefined, { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' })}
+                            </p>
+                        </div>
                     </div>
                     <div className="flex items-center gap-3">
-                        <MapPin className="w-5 h-5 text-orange" />
-                        {ticket.events.location}
+                        <div className="w-10 h-10 bg-orange/10 flex items-center justify-center border-2 border-black rounded-full">
+                            <MapPin className="w-5 h-5 text-orange" />
+                        </div>
+                        <div>
+                            <p className="text-xs uppercase font-bold opacity-50">Location</p>
+                            <p className="font-bold">{ticket.events.location}</p>
+                        </div>
                     </div>
                 </div>
 
-                <div className="mt-10 pt-8 border-t-2 border-black/5 flex justify-between items-end">
+                <div className="grid grid-cols-2 gap-4 pt-6 border-t-2 border-black/5">
                     <div>
-                        <div className="text-xs font-bold uppercase tracking-widest text-black/40 mb-1">Attendee</div>
-                        <div className="font-display text-2xl">{ticket.attendee_name}</div>
+                        <p className="text-xs uppercase font-bold opacity-50">Attendee</p>
+                        <p className="font-bold truncate">{ticket.attendee_name}</p>
+                    </div>
+                    <div>
+                        <p className="text-xs uppercase font-bold opacity-50">Ticket ID</p>
+                        <p className="font-mono text-xs mt-1 opacity-70 truncate" title={ticket.id}>{ticket.id.slice(0, 8)}...</p>
                     </div>
                 </div>
             </div>
 
-            {/* Right: QR Code */}
-            <div className="md:w-80 bg-black text-cream p-10 flex flex-col items-center justify-center relative">
-                 <div className="absolute -right-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-cream rounded-full border-l-2 border-black"></div>
-                 
-                 <div className="bg-white p-4 border-2 border-white mb-6 rounded-sm">
-                    <QRCode 
-                        value={ticket.id} 
-                        size={140} 
-                        fgColor="#000000" 
-                        bgColor="#FFFFFF" 
-                        level="M"
+            {/* Right Side: QR Code */}
+            <div className="bg-black text-white p-8 md:w-80 flex flex-col items-center justify-center text-center relative">
+                 <div className="mb-6 p-4 bg-white rounded-xl border-4 border-orange">
+                    {/* THE QR CODE GENERATOR */}
+                    <QRCodeSVG 
+                        value={ticket.id} // Scannable value is the Ticket ID
+                        size={140}
+                        level="H" // High error correction
                     />
                  </div>
-                 <p className="font-accent text-lg text-orange uppercase tracking-widest text-center mb-1">Scan at Entry</p>
+                 <p className="text-xs font-mono opacity-60 mb-1">Scan to Verify</p>
+                 <p className="text-xs font-bold uppercase tracking-widest text-orange">Valid for 1 Entry</p>
+                 
+                 <div className="mt-8 pt-6 border-t border-white/20 w-full">
+                     <p className="text-xs uppercase opacity-40 mb-1">Price Paid</p>
+                     <p className="text-2xl font-display">{formatCurrency(ticket.amount_paid)}</p>
+                 </div>
             </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="mt-12 flex gap-4">
-            <Button onClick={downloadTicket} className="bg-black text-white hover:bg-orange border-none shadow-lg px-8 h-12">
-                <Download className="w-4 h-4 mr-2" /> Download Ticket
-            </Button>
-            <Link to="/explore">
-                <Button variant="outline" className="bg-white h-12 px-8 hover:bg-black hover:text-white">Find More Events</Button>
-            </Link>
+        {/* Action Buttons (Hidden when printing) */}
+        <div className="mt-12 flex justify-center gap-4 print:hidden">
+            <button onClick={handleDownload} className="flex items-center gap-2 bg-white border-2 border-black px-6 py-3 font-bold uppercase tracking-widest hover:bg-black hover:text-white transition-colors">
+                <Download className="w-5 h-5" /> Download / Print
+            </button>
+            <button onClick={() => { navigator.clipboard.writeText(window.location.href); alert("Link copied!"); }} className="flex items-center gap-2 bg-transparent opacity-50 hover:opacity-100 px-6 py-3 font-bold uppercase tracking-widest transition-opacity">
+                <Share2 className="w-5 h-5" /> Share
+            </button>
         </div>
 
       </div>

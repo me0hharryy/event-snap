@@ -13,6 +13,9 @@ import MyTickets from "./pages/dashboard/MyTickets";
 import SignInPage from "./pages/auth/SignIn";
 import SignUpPage from "./pages/auth/SignUp";
 import ScannerPage from "./pages/dashboard/Scanner";
+import Wallet from "./pages/dashboard/Wallet";
+import AdminPayouts from "./pages/admin/Payouts";
+import PaymentFailure from "./pages/public/PaymentFailure";
 import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
 
 export default function App() {
@@ -25,7 +28,7 @@ export default function App() {
       <Route path="/register/:id" element={<Register />} />
       <Route path="/tickets/:id" element={<TicketView />} />
       <Route path="/payment/callback" element={<PaymentCallback />} /> {/* NEW ROUTE */}
-      
+      <Route path="/payment/failure" element={<PaymentFailure />} />
       {/* Auth Routes */}
       <Route path="/sign-in/*" element={<SignInPage />} />
       <Route path="/sign-up/*" element={<SignUpPage />} />
@@ -37,8 +40,10 @@ export default function App() {
       <Route path="/dashboard/events/edit/:id" element={<SignedIn><EditEvent /></SignedIn>} />
       <Route path="/dashboard/attendees" element={<SignedIn><Attendees /></SignedIn>} />
       <Route path="/dashboard/scan" element={<SignedIn><ScannerPage /></SignedIn>} />
+      <Route path="/dashboard/wallet" element={<SignedIn><Wallet /></SignedIn>} />
       {/* Redirect unknown protected routes */}
       <Route path="/dashboard/*" element={<SignedOut><RedirectToSignIn /></SignedOut>} />
+      <Route path="/admin/payouts" element={<SignedIn><AdminPayouts /></SignedIn>} />
     </Routes>
   );
 }

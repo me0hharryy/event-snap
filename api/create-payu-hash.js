@@ -39,7 +39,7 @@ export default async function handler(req, res) {
       productinfo,
       firstname,
       email,
-      phone: "9999999999", // Required by PayU (Dummy for test)
+      phone: phone || "9999999999", // Required by PayU (Dummy for test)
       surl: `${req.headers.origin}/api/payu-success`, // Success URL (Backend Endpoint)
       furl: `${req.headers.origin}/payment/failure`, // Failure URL
       hash,
